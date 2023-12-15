@@ -2,13 +2,24 @@ import { View, TouchableOpacity,Text,StyleSheet } from 'react-native'
 import React, { useEffect,useState } from 'react'
 
 const Quiz = ({navigation}) => {
-  const[questions,setQuestions]=useState([])
-  const getQuiz=async()=>{
-    const baseUrl='https://opentdb.com/api.php?amount=10&type=multiple';
-    const res=await fetch(baseUrl)
-    const data = res.json()
-    console.log(data)
-    setQuestions(data)
+  const[questions,setQuestions]=useState(null)
+  const[quesNum,setQuesNum]=useState(0)
+  const getQuiz = async () => {
+    const baseUrl = 'https://opentdb.com/api.php?amount=10&category=18&difficulty=medium&type=multiple';
+    try {
+      const res = await fetch(baseUrl);
+      const data = await res.json();
+      console.log(data.results);
+      setQuestions(data.results);
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+      // Handle error as needed
+    }
+  };
+  const handleNext=()=>{
+    if (quesNum < questions.length - 1) {
+      setQuesNum(quesNum + 1);
+    }
   }
   useEffect(()=>{
     getQuiz()
@@ -18,8 +29,10 @@ const Quiz = ({navigation}) => {
   ,[])
   return (
     <View style={styles.container}>
+    {questions &&
+   (<View>
       <View style={styles.top}>
-        <Text style={styles.question}>Q.Imagine these is the real cool question</Text>
+        <Text style={styles.question}>Q. {questions[quesNum].question}</Text>
       </View>
       <View style={styles.optional}>
         <TouchableOpacity style={styles.optionButton}>
@@ -40,11 +53,16 @@ const Quiz = ({navigation}) => {
           <Text style={styles.text}>Skip</Text>
         </TouchableOpacity>
       
-      <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>Next</Text>
-        </TouchableOpacity>
+      {quesNum!==9 &&(<TouchableOpacity onPress={handleNext} style={styles.button}>
+          <Text style={styles.text} >Next</Text>
+        </TouchableOpacity>)}
+        {quesNum===9 &&(<TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Results')}>
+          <Text style={styles.text} 
+          >Show Result</Text>
+        </TouchableOpacity>)}
         
       </View>
+      </View>) }
     </View>
   )
 }
@@ -72,7 +90,7 @@ const styles = StyleSheet.create({
 
   },
   button:{
-    backgroundColor:'#314357',
+    backgroundColor:'#92E3A9',
     alignItems:'center',
     justifyContent:'center',
     marginBottom:12,
@@ -82,13 +100,13 @@ const styles = StyleSheet.create({
   
   },
   text:{
-    color:'#fff',
+    color:'#000',
     fontSize:14,
     fontWeight:'600'
   },
   option:{
     fontSize:18,
-    color:'#fff'
+    color:'#000'
   },
   question:{
     fontSize:28,
@@ -96,7 +114,7 @@ const styles = StyleSheet.create({
   optionButton:{
     paddingVertical:12,
     marginVertical:6,
-    backgroundColor:'#314357',
+    backgroundColor:'#92E3A9',
     paddingHorizontal:12,
     borderRadius:12
   },

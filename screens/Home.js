@@ -37,7 +37,7 @@ container:{
   
 },
 button:{
-  backgroundColor:'#314357',
+  backgroundColor:'#92E3A9',
   width:'100%',
   alignItems:'center',
   justifyContent:'center',
@@ -48,7 +48,7 @@ button:{
 
 },
 text:{
-  color:'#fff',
+  color:'#000',
   fontSize:24,
   fontWeight:'600'
 }
