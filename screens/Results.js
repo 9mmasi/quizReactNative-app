@@ -1,13 +1,18 @@
 import { View, Text ,StyleSheet,Image,TouchableOpacity} from 'react-native'
 import React from 'react'
+import AwardImage from '../assets/award.png'; // Import the award image
+import FailImage from '../assets/fail.png';
 import Title from '../components/Title'
 
-const Home = ({navigation}) => {
+const Home = ({navigation,route}) => {
+  const {score}=route.params
+  const resultBanner=score>40? AwardImage : FailImage; 
   return (
     <View style={styles.container}>
       <Title />
+      <Text style={styles.scoreText}>{score}</Text>
       <View style={styles.bannerContainer}>
-        <Image resizeMode='contain' style={styles.banner} source={require('../assets/award.png')} />
+        <Image resizeMode='contain' style={styles.banner} source={{uri:resultBanner}} />
       </View>
       <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Home')}>
         <Text style={styles.text}>Home</Text>
@@ -35,6 +40,12 @@ container:{
   height:'100%',
   
   
+},
+scoreText:{
+  textAlign:'center',
+  color:'#000',
+  fontSize:24,
+  fontWeight:'600'
 },
 button:{
   backgroundColor:'#92E3A9',

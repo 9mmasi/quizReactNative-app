@@ -15,7 +15,9 @@ const Quiz = ({navigation}) => {
   const[quesNum,setQuesNum]=useState(0)
   const[options,setOPtions]=useState([])
   const[score,setScore]=useState(0)
+  const[isLoading,setIsLoading]=useState(false)
   const getQuiz = async () => {
+    setIsLoading(true)
     const baseUrl = 'https://opentdb.com/api.php?amount=10&category=18&difficulty=medium&type=multiple';
     try {
       const res = await fetch(baseUrl);
@@ -27,6 +29,7 @@ const Quiz = ({navigation}) => {
       console.error('Error fetching quiz:', error);
       // Handle error as needed
     }
+    setIsLoading(false)
   };
   const handleSelection=(_options)=>{
     if(_options===questions[quesNum].correct_answer){
@@ -89,7 +92,7 @@ const Quiz = ({navigation}) => {
       {quesNum!==9 &&(<TouchableOpacity onPress={handleNext} style={styles.button}>
           <Text style={styles.text} >Next</Text>
         </TouchableOpacity>)}
-        {quesNum===9 &&(<TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Results')}>
+        {quesNum===9 &&(<TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Results',{score:score})}>
           <Text style={styles.text} 
           >Show Result</Text>
         </TouchableOpacity>)}
@@ -106,6 +109,11 @@ const styles = StyleSheet.create({
     paddingTop:40,
   paddingHorizontal:20,
   height:'100%',
+  },
+  loadingText:{
+    textAlign:'center',
+    fontSize:60,
+    fontWeight:700
   },
   top:{
     marginVertical:16
